@@ -1,0 +1,127 @@
+import { useEffect, useState } from 'react'
+import AdminLayout from '../../components/AdminLayout'
+import {
+  adminGetContacts,
+  adminMarkContactAsRead,
+  adminDeleteContact,
+} from '../../services/contactService'
+import type { ContactMessage } from '../../types'
+
+export default function ContactsAdmin() {
+  const [messages, setMessages] = useState<ContactMessage[]>([])
+  const [loading, setLoading] = useState(true)
+
+  const load = () => { adminGetContacts().then(setMessages).finally(() => setLoading(false)) }
+  useEffect(() => { load() }, [])
+
+  const handleMarkRead = async (id: number) => {
+    await adminMarkContactAsRead(id)
+    setMessages(messages.map(m => m.id === id ? { ...m, read: true } : m))
+  }
+
+  const handleDelete = async (id: number) => {
+    if (!confirm('Supprimer ce message ?')) return
+    await adminDeleteContact(id)
+    setMessages(messages.filter(m => m.id !== id))
+  }
+
+  const unreadCount = messages.filter(m => !m.read).length
+
+  return (
+    <AdminLayout>
+      <div className="space-y-6">
+        <div>
+          <h1 className="font-headline text-3xl text-on-background">Contacts</h1>
+          <p className="text-on-surface-variant mt-1">
+            {messages.length} message(s)
+            {unreadCount > 0 && (
+              <span className="ml-2 bg-primary text-on-primary text-xs px-2 py-0.5 rounded-full font-label">
+                {unreadCount} non lu{unreadCount > 1 ? 's' : ''}
+              </span>
+            )}
+          </p>
+        </div>
+
+        {loading ? (
+          <div className="text-center py-16">
+            <span className="material-symbols-outlined text-4xl text-primary animate-spin">progress_activity</span>
+          </div>
+        ) : messages.length === 0 ? (
+          <div className="text-center py-16 text-on-surface-variant">Aucun message reçu pour l'instant.</div>
+        ) : (
+          <div className="space-y-4">
+            {messages.map(msg => (
+              <div
+                key={msg.id}
+                className={`bg-surface-container-lowest rounded-xl p-6 shadow-sm border-l-4 ${
+                  msg.read ? 'border-outline-variant/30' : 'border-primary'
+                }`}
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-3 flex-wrap mb-1">
+                      <span className="font-bold text-on-background">
+                        {msg.firstName} {msg.lastName}
+                      </span>
+                      {!msg.read && (
+                        <span className="bg-primary/10 text-primary text-xs px-2 py-0.5 rounded-full font-label">
+                          Non lu
+                        </span>
+                      )}
+                      {msg.eventType && (
+                        <span className="bg-surface-container text-on-surface-variant text-xs px-2 py-0.5 rounded-full font-label">
+                          {msg.eventType}
+                        </span>
+                      )}
+                    </div>
+                    <a
+                      href={`mailto:${msg.email}`}
+                      className="text-sm text-primary hover:underline"
+                    >
+                      {msg.email}
+                    </a>
+                    {msg.eventDate && (
+                      <p className="text-xs text-on-surface-variant mt-1">
+                        <span className="material-symbols-outlined text-xs align-middle">calendar_today</span>{' '}
+                        {new Date(msg.eventDate).toLocaleDateString('fr-FR')}
+                      </p>
+                    )}
+                    <p className="text-on-surface-variant mt-3 text-sm leading-relaxed whitespace-pre-wrap">
+                      {msg.message}
+                    </p>
+                    <p className="text-xs text-outline mt-3">
+                      Reçu le {new Date(msg.createdAt).toLocaleDateString('fr-FR', {
+                        day: 'numeric', month: 'long', year: 'numeric',
+                        hour: '2-digit', minute: '2-digit',
+                      })}
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-2 flex-shrink-0">
+                    {!msg.read && (
+                      <button
+                        onClick={() => handleMarkRead(msg.id)}
+                        className="flex items-center gap-1 px-3 py-2 bg-surface-container text-on-surface-variant rounded-full text-xs hover:bg-surface-container-high transition-colors"
+                        title="Marquer comme lu"
+                      >
+                        <span className="material-symbols-outlined text-sm">mark_email_read</span>
+                        Marquer lu
+                      </button>
+                    )}
+                    <button
+                      onClick={() => handleDelete(msg.id)}
+                      className="flex items-center gap-1 px-3 py-2 bg-error-container/50 text-on-error-container rounded-full text-xs hover:bg-error-container transition-colors"
+                      title="Supprimer"
+                    >
+                      <span className="material-symbols-outlined text-sm">delete</span>
+                      Supprimer
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </AdminLayout>
+  )
+}

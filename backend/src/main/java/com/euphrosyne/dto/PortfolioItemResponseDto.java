@@ -3,7 +3,7 @@ package com.euphrosyne.dto;
 import com.euphrosyne.model.ItemStatus;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data
 public class PortfolioItemResponseDto {
@@ -14,5 +14,5 @@ public class PortfolioItemResponseDto {
     private String description;
     private ItemStatus status;
     private CategoryDto category;
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 }

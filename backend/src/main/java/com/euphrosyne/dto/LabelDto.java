@@ -3,7 +3,7 @@ package com.euphrosyne.dto;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data
 public class LabelDto {
@@ -15,5 +15,5 @@ public class LabelDto {
     private String name;
 
     private String description;
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 }

@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Table(name = "newsletter_subscribers")
@@ -25,7 +25,7 @@ public class Newsletter {
 
     @Column(nullable = false, updatable = false)
     @Builder.Default
-    private LocalDateTime subscribedAt = LocalDateTime.now();
+    private Instant subscribedAt = Instant.now();
 
     @Builder.Default
     private boolean active = true;

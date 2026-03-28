@@ -9,6 +9,7 @@ import {
 } from '../../services/portfolioService'
 import { getCategories } from '../../services/categoryService'
 import ImageUploadInput from '../../components/ImageUploadInput'
+import ConfirmModal from '../../components/ConfirmModal'
 import type { PortfolioItem, Category } from '../../types'
 
 interface FormData {
@@ -28,6 +29,7 @@ export default function PortfolioManager() {
   const [showForm, setShowForm] = useState(false)
   const [editItem, setEditItem] = useState<PortfolioItem | null>(null)
   const [form, setForm] = useState<FormData>(emptyForm)
+  const [confirm, setConfirm] = useState<{ open: boolean; id: number }>({ open: false, id: 0 })
   const [saving, setSaving] = useState(false)
 
   const load = () => {
@@ -74,10 +76,14 @@ export default function PortfolioManager() {
     setItems(items.map(i => i.id === updated.id ? updated : i))
   }
 
-  const handleDelete = async (id: number) => {
-    if (!confirm('Supprimer cet item ?')) return
-    await adminDeletePortfolioItem(id)
-    setItems(items.filter(i => i.id !== id))
+  const handleDelete = (id: number) => {
+    setConfirm({ open: true, id })
+  }
+
+  const doDelete = async () => {
+    await adminDeletePortfolioItem(confirm.id)
+    setItems(items.filter(i => i.id !== confirm.id))
+    setConfirm({ open: false, id: 0 })
   }
 
   return (
@@ -221,6 +227,13 @@ export default function PortfolioManager() {
           </div>
         )}
       </div>
+      <ConfirmModal
+        open={confirm.open}
+        title="Supprimer l'item"
+        message="Cette action est irréversible."
+        onConfirm={doDelete}
+        onCancel={() => setConfirm({ open: false, id: 0 })}
+      />
     </AdminLayout>
   )
 }

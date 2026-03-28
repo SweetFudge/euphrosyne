@@ -3,7 +3,7 @@ package com.euphrosyne.dto;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data
 public class ContactMessageResponseDto {
@@ -15,5 +15,5 @@ public class ContactMessageResponseDto {
     private LocalDate eventDate;
     private String message;
     private boolean read;
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 }

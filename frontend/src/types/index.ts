@@ -75,6 +75,21 @@ export interface CatalogueItem {
   status: ItemStatus
 }
 
+export interface NewsletterTemplate {
+  id: number
+  name: string
+  designJson: string
+  htmlContent: string
+  createdAt: string
+}
+
+export interface NewsletterCampaign {
+  id: number
+  subject: string
+  recipientCount: number
+  sentAt: string
+}
+
 export interface AuthResponse {
   token: string
   username: string

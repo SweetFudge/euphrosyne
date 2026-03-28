@@ -6,7 +6,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data
 public class ReservationResponseDto {
@@ -21,5 +21,5 @@ public class ReservationResponseDto {
     private BigDecimal budget;
     private String message;
     private Status status;
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 }

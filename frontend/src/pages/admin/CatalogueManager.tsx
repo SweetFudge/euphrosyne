@@ -10,6 +10,7 @@ import {
 import { getCategories } from '../../services/categoryService'
 import { getLabels } from '../../services/labelService'
 import ImageUploadInput from '../../components/ImageUploadInput'
+import ConfirmModal from '../../components/ConfirmModal'
 import type { CatalogueItem, Category, Label } from '../../types'
 
 interface FormData {
@@ -31,6 +32,7 @@ export default function CatalogueManager() {
   const [editItem, setEditItem] = useState<CatalogueItem | null>(null)
   const [form, setForm] = useState<FormData>(emptyForm)
   const [saving, setSaving] = useState(false)
+  const [confirm, setConfirm] = useState<{ open: boolean; id: number }>({ open: false, id: 0 })
 
   const load = () => {
     Promise.all([
@@ -89,10 +91,14 @@ export default function CatalogueManager() {
     setItems(items.map(i => i.id === updated.id ? updated : i))
   }
 
-  const handleDelete = async (id: number) => {
-    if (!confirm('Supprimer cet article ?')) return
-    await adminDeleteCatalogueItem(id)
-    setItems(items.filter(i => i.id !== id))
+  const handleDelete = (id: number) => {
+    setConfirm({ open: true, id })
+  }
+
+  const doDelete = async () => {
+    await adminDeleteCatalogueItem(confirm.id)
+    setItems(items.filter(i => i.id !== confirm.id))
+    setConfirm({ open: false, id: 0 })
   }
 
   return (
@@ -252,6 +258,13 @@ export default function CatalogueManager() {
           </div>
         )}
       </div>
+      <ConfirmModal
+        open={confirm.open}
+        title="Supprimer l'article"
+        message="Cette action est irréversible."
+        onConfirm={doDelete}
+        onCancel={() => setConfirm({ open: false, id: 0 })}
+      />
     </AdminLayout>
   )
 }

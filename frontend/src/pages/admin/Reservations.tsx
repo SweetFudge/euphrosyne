@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import AdminLayout from '../../components/AdminLayout'
+import ConfirmModal from '../../components/ConfirmModal'
 import {
   adminGetReservations,
   adminUpdateReservationStatus,
@@ -25,6 +26,7 @@ export default function Reservations() {
   const [reservations, setReservations] = useState<Reservation[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<Filter>('ALL')
+  const [confirm, setConfirm] = useState<{ open: boolean; id: number }>({ open: false, id: 0 })
 
   const load = () => {
     adminGetReservations()
@@ -39,9 +41,13 @@ export default function Reservations() {
     load()
   }
 
-  const handleDelete = async (id: number) => {
-    if (!confirm('Supprimer cette réservation ?')) return
-    await adminDeleteReservation(id)
+  const handleDelete = (id: number) => {
+    setConfirm({ open: true, id })
+  }
+
+  const doDelete = async () => {
+    await adminDeleteReservation(confirm.id)
+    setConfirm({ open: false, id: 0 })
     load()
   }
 
@@ -152,6 +158,13 @@ export default function Reservations() {
           </div>
         )}
       </div>
+      <ConfirmModal
+        open={confirm.open}
+        title="Supprimer la réservation"
+        message="Cette action est irréversible."
+        onConfirm={doDelete}
+        onCancel={() => setConfirm({ open: false, id: 0 })}
+      />
     </AdminLayout>
   )
 }

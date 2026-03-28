@@ -3,7 +3,7 @@ package com.euphrosyne.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Table(name = "labels")
@@ -28,5 +28,5 @@ public class Label {
 
     @Builder.Default
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private Instant createdAt = Instant.now();
 }

@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import AdminLayout from '../../components/AdminLayout'
+import ConfirmModal from '../../components/ConfirmModal'
 import {
   adminGetAllCategories,
   adminCreateCategory,
@@ -29,41 +30,74 @@ function CategorySection({
 }) {
   const [input, setInput] = useState('')
   const [saving, setSaving] = useState(false)
+  const [open, setOpen] = useState(false)
 
   const handleAdd = async (e: FormEvent) => {
     e.preventDefault()
     const name = input.trim()
     if (!name) return
     setSaving(true)
-    try { await onAdd(name, scope); setInput('') } finally { setSaving(false) }
+    try { await onAdd(name, scope); setInput(''); setOpen(true) } finally { setSaving(false) }
   }
 
   return (
-    <div className="bg-surface-container-lowest rounded-xl p-6">
-      <h2 className="font-headline text-xl text-on-background mb-4">{title}</h2>
-      <div className="flex flex-wrap gap-2 mb-4 min-h-[2rem]">
-        {items.length === 0 ? (
-          <p className="text-sm text-on-surface-variant italic">Aucune catégorie</p>
-        ) : items.map(cat => (
-          <span key={cat.id} className="flex items-center gap-1.5 bg-surface-container px-3 py-1.5 rounded-full text-sm text-on-surface-variant group">
-            {cat.name}
-            <button onClick={() => onDelete(cat.id)} className="opacity-0 group-hover:opacity-100 transition-opacity text-outline hover:text-error">
-              <span className="material-symbols-outlined text-sm">close</span>
-            </button>
+    <div className="bg-surface-container-lowest rounded-xl overflow-hidden">
+      {/* Header accordéon */}
+      <button
+        type="button"
+        onClick={() => setOpen(o => !o)}
+        className="w-full flex items-center justify-between px-6 py-4 hover:bg-surface-container transition-colors"
+      >
+        <h2 className="font-headline text-xl text-on-background">{title}</h2>
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-label bg-primary/10 text-primary px-2 py-0.5 rounded-full">
+            {items.length}
           </span>
-        ))}
+          <span className={`material-symbols-outlined text-outline transition-transform duration-200 ${open ? 'rotate-180' : ''}`}>
+            expand_more
+          </span>
+        </div>
+      </button>
+
+      {/* Liste collapsible */}
+      <div className={`transition-all duration-200 overflow-hidden ${open ? 'max-h-64' : 'max-h-0'}`}>
+        <div className="overflow-y-auto max-h-64 border-t border-outline-variant/20">
+          {items.length === 0 ? (
+            <p className="text-sm text-on-surface-variant italic px-6 py-4">Aucune catégorie</p>
+          ) : items.map((cat, i) => (
+            <div
+              key={cat.id}
+              className={`flex items-center justify-between px-6 py-2.5 group hover:bg-surface-container transition-colors ${i < items.length - 1 ? 'border-b border-outline-variant/10' : ''}`}
+            >
+              <div className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary/40 flex-shrink-0" />
+                <span className="text-sm text-on-surface">{cat.name}</span>
+              </div>
+              <button
+                onClick={() => onDelete(cat.id)}
+                className="opacity-0 group-hover:opacity-100 transition-opacity text-outline hover:text-error p-0.5 rounded"
+              >
+                <span className="material-symbols-outlined text-sm">close</span>
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
-      <form onSubmit={handleAdd} className="flex gap-2">
-        <input
-          value={input}
-          onChange={e => setInput(e.target.value)}
-          placeholder="Nouvelle catégorie…"
-          className="flex-1 px-4 py-2 rounded-lg bg-surface border border-outline-variant/30 focus:ring-2 focus:ring-primary outline-none transition-all text-sm"
-        />
-        <button type="submit" disabled={saving || !input.trim()} className="signature-cta px-4 py-2 rounded-lg text-white font-bold text-sm hover:opacity-90 disabled:opacity-50 flex items-center gap-1">
-          <span className="material-symbols-outlined text-base">add</span>Ajouter
-        </button>
-      </form>
+
+      {/* Formulaire d'ajout */}
+      <div className="px-6 py-4 border-t border-outline-variant/20">
+        <form onSubmit={handleAdd} className="flex gap-2">
+          <input
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            placeholder="Nouvelle catégorie…"
+            className="flex-1 px-4 py-2 rounded-lg bg-surface border border-outline-variant/30 focus:ring-2 focus:ring-primary outline-none transition-all text-sm"
+          />
+          <button type="submit" disabled={saving || !input.trim()} className="signature-cta px-4 py-2 rounded-lg text-white font-bold text-sm hover:opacity-90 disabled:opacity-50 flex items-center gap-1">
+            <span className="material-symbols-outlined text-base">add</span>Ajouter
+          </button>
+        </form>
+      </div>
     </div>
   )
 }
@@ -81,52 +115,91 @@ function LabelSection({
 }) {
   const [input, setInput] = useState('')
   const [saving, setSaving] = useState(false)
+  const [open, setOpen] = useState(false)
 
   const handleAdd = async (e: FormEvent) => {
     e.preventDefault()
     const name = input.trim()
     if (!name) return
     setSaving(true)
-    try { await onAdd(name); setInput('') } finally { setSaving(false) }
+    try { await onAdd(name); setInput(''); setOpen(true) } finally { setSaving(false) }
   }
 
   return (
-    <div className="bg-surface-container-lowest rounded-xl p-6">
-      <h2 className="font-headline text-xl text-on-background mb-1">Types d'événements</h2>
-      <p className="text-sm text-on-surface-variant mb-4">Étiquettes "Compatible avec" affichées sur les articles du catalogue.</p>
-      <div className="flex flex-wrap gap-2 mb-4 min-h-[2rem]">
-        {items.length === 0 ? (
-          <p className="text-sm text-on-surface-variant italic">Aucun label</p>
-        ) : items.map(label => (
-          <span key={label.id} className="flex items-center gap-1.5 bg-primary/10 text-primary px-3 py-1.5 rounded-full text-sm font-label group">
-            {label.name}
-            <button onClick={() => onDelete(label.id)} className="opacity-0 group-hover:opacity-100 transition-opacity text-primary/50 hover:text-error">
-              <span className="material-symbols-outlined text-sm">close</span>
-            </button>
+    <div className="bg-surface-container-lowest rounded-xl overflow-hidden">
+      {/* Header accordéon */}
+      <button
+        type="button"
+        onClick={() => setOpen(o => !o)}
+        className="w-full flex items-center justify-between px-6 py-4 hover:bg-surface-container transition-colors"
+      >
+        <div className="text-left">
+          <h2 className="font-headline text-xl text-on-background">Types d'événements</h2>
+          <p className="text-xs text-on-surface-variant mt-0.5">Étiquettes "Compatible avec" du catalogue</p>
+        </div>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <span className="text-xs font-label bg-primary/10 text-primary px-2 py-0.5 rounded-full">
+            {items.length}
           </span>
-        ))}
+          <span className={`material-symbols-outlined text-outline transition-transform duration-200 ${open ? 'rotate-180' : ''}`}>
+            expand_more
+          </span>
+        </div>
+      </button>
+
+      {/* Liste collapsible */}
+      <div className={`transition-all duration-200 overflow-hidden ${open ? 'max-h-64' : 'max-h-0'}`}>
+        <div className="overflow-y-auto max-h-64 border-t border-outline-variant/20">
+          {items.length === 0 ? (
+            <p className="text-sm text-on-surface-variant italic px-6 py-4">Aucun label</p>
+          ) : items.map((label, i) => (
+            <div
+              key={label.id}
+              className={`flex items-center justify-between px-6 py-2.5 group hover:bg-surface-container transition-colors ${i < items.length - 1 ? 'border-b border-outline-variant/10' : ''}`}
+            >
+              <div className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
+                <span className="text-sm text-on-surface">{label.name}</span>
+              </div>
+              <button
+                onClick={() => onDelete(label.id)}
+                className="opacity-0 group-hover:opacity-100 transition-opacity text-outline hover:text-error p-0.5 rounded"
+              >
+                <span className="material-symbols-outlined text-sm">close</span>
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
-      <form onSubmit={handleAdd} className="flex gap-2">
-        <input
-          value={input}
-          onChange={e => setInput(e.target.value)}
-          placeholder="ex: Mariage, Anniversaire…"
-          className="flex-1 px-4 py-2 rounded-lg bg-surface border border-outline-variant/30 focus:ring-2 focus:ring-primary outline-none transition-all text-sm"
-        />
-        <button type="submit" disabled={saving || !input.trim()} className="signature-cta px-4 py-2 rounded-lg text-white font-bold text-sm hover:opacity-90 disabled:opacity-50 flex items-center gap-1">
-          <span className="material-symbols-outlined text-base">add</span>Ajouter
-        </button>
-      </form>
+
+      {/* Formulaire d'ajout */}
+      <div className="px-6 py-4 border-t border-outline-variant/20">
+        <form onSubmit={handleAdd} className="flex gap-2">
+          <input
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            placeholder="ex: Mariage, Anniversaire…"
+            className="flex-1 px-4 py-2 rounded-lg bg-surface border border-outline-variant/30 focus:ring-2 focus:ring-primary outline-none transition-all text-sm"
+          />
+          <button type="submit" disabled={saving || !input.trim()} className="signature-cta px-4 py-2 rounded-lg text-white font-bold text-sm hover:opacity-90 disabled:opacity-50 flex items-center gap-1">
+            <span className="material-symbols-outlined text-base">add</span>Ajouter
+          </button>
+        </form>
+      </div>
     </div>
   )
 }
 
 // ── Main page ─────────────────────────────────────────────────────────────────
 
+type ConfirmState = { open: boolean; title: string; message: string; onConfirm: () => void }
+const closedConfirm: ConfirmState = { open: false, title: '', message: '', onConfirm: () => {} }
+
 export default function LabelsManager() {
   const [categories, setCategories] = useState<Category[]>([])
   const [labels, setLabels] = useState<Label[]>([])
   const [loading, setLoading] = useState(true)
+  const [confirm, setConfirm] = useState<ConfirmState>(closedConfirm)
 
   const load = () => {
     Promise.all([adminGetAllCategories(), adminGetAllLabels()])
@@ -140,10 +213,17 @@ export default function LabelsManager() {
     setCategories(prev => [...prev, created])
   }
 
-  const handleDeleteCategory = async (id: number) => {
-    if (!confirm('Supprimer cette catégorie ?')) return
-    await adminDeleteCategory(id)
-    setCategories(prev => prev.filter(c => c.id !== id))
+  const handleDeleteCategory = (id: number) => {
+    setConfirm({
+      open: true,
+      title: 'Supprimer la catégorie',
+      message: 'Cette action est irréversible.',
+      onConfirm: async () => {
+        await adminDeleteCategory(id)
+        setCategories(prev => prev.filter(c => c.id !== id))
+        setConfirm(closedConfirm)
+      },
+    })
   }
 
   const handleAddLabel = async (name: string) => {
@@ -151,10 +231,17 @@ export default function LabelsManager() {
     setLabels(prev => [...prev, created])
   }
 
-  const handleDeleteLabel = async (id: number) => {
-    if (!confirm('Supprimer ce label ?')) return
-    await adminDeleteLabel(id)
-    setLabels(prev => prev.filter(l => l.id !== id))
+  const handleDeleteLabel = (id: number) => {
+    setConfirm({
+      open: true,
+      title: "Supprimer l'étiquette",
+      message: 'Cette action est irréversible.',
+      onConfirm: async () => {
+        await adminDeleteLabel(id)
+        setLabels(prev => prev.filter(l => l.id !== id))
+        setConfirm(closedConfirm)
+      },
+    })
   }
 
   const catalogueCategories = categories.filter(c => c.scope === 'CATALOGUE')
@@ -196,6 +283,14 @@ export default function LabelsManager() {
           </div>
         )}
       </div>
+
+      <ConfirmModal
+        open={confirm.open}
+        title={confirm.title}
+        message={confirm.message}
+        onConfirm={confirm.onConfirm}
+        onCancel={() => setConfirm(closedConfirm)}
+      />
     </AdminLayout>
   )
 }

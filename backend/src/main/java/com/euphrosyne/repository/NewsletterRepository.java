@@ -11,4 +11,5 @@ public interface NewsletterRepository extends JpaRepository<Newsletter, Long> {
     Optional<Newsletter> findByEmail(String email);
     List<Newsletter> findAllByOrderBySubscribedAtDesc();
     long countByActive(boolean active);
+    List<Newsletter> findAllByActiveTrue();
 }

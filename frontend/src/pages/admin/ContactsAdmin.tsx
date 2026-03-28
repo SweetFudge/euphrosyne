@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import AdminLayout from '../../components/AdminLayout'
+import ConfirmModal from '../../components/ConfirmModal'
 import {
   adminGetContacts,
   adminMarkContactAsRead,
@@ -10,6 +11,7 @@ import type { ContactMessage } from '../../types'
 export default function ContactsAdmin() {
   const [messages, setMessages] = useState<ContactMessage[]>([])
   const [loading, setLoading] = useState(true)
+  const [confirm, setConfirm] = useState<{ open: boolean; id: number }>({ open: false, id: 0 })
 
   const load = () => { adminGetContacts().then(setMessages).finally(() => setLoading(false)) }
   useEffect(() => { load() }, [])
@@ -19,10 +21,14 @@ export default function ContactsAdmin() {
     setMessages(messages.map(m => m.id === id ? { ...m, read: true } : m))
   }
 
-  const handleDelete = async (id: number) => {
-    if (!confirm('Supprimer ce message ?')) return
-    await adminDeleteContact(id)
-    setMessages(messages.filter(m => m.id !== id))
+  const handleDelete = (id: number) => {
+    setConfirm({ open: true, id })
+  }
+
+  const doDelete = async () => {
+    await adminDeleteContact(confirm.id)
+    setMessages(messages.filter(m => m.id !== confirm.id))
+    setConfirm({ open: false, id: 0 })
   }
 
   const unreadCount = messages.filter(m => !m.read).length
@@ -122,6 +128,13 @@ export default function ContactsAdmin() {
           </div>
         )}
       </div>
+      <ConfirmModal
+        open={confirm.open}
+        title="Supprimer le message"
+        message="Cette action est irréversible."
+        onConfirm={doDelete}
+        onCancel={() => setConfirm({ open: false, id: 0 })}
+      />
     </AdminLayout>
   )
 }

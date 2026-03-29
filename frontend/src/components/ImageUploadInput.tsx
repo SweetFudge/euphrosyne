@@ -1,5 +1,6 @@
 import { useRef, useState, type ChangeEvent } from 'react'
 import { uploadImage } from '../services/uploadService'
+import { resolveImageUrl } from '../utils/imageUrl'
 
 interface Props {
   value: string
@@ -8,7 +9,7 @@ interface Props {
 
 export default function ImageUploadInput({ value, onChange }: Props) {
   const inputRef = useRef<HTMLInputElement>(null)
-  const [preview, setPreview] = useState<string>(value)
+  const [preview, setPreview] = useState<string>(resolveImageUrl(value))
   const [uploading, setUploading] = useState(false)
 
   const handleFile = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -22,7 +23,8 @@ export default function ImageUploadInput({ value, onChange }: Props) {
       const url = await uploadImage(file)
       onChange(url)
       setPreview(url)
-    } catch {
+    } catch (err) {
+      console.error('Upload failed:', err)
       setPreview(value)
     } finally {
       setUploading(false)

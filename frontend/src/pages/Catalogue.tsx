@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getCatalogue } from '../services/catalogueService'
 import type { CatalogueItem } from '../types'
+import { resolveImageUrl } from '../utils/imageUrl'
 
 const EVENT_BADGE_COLORS: Record<string, string> = {
   'Mariage': 'bg-amber-100 text-amber-800',
@@ -102,7 +103,7 @@ export default function Catalogue() {
                   <div className="relative h-56 overflow-hidden">
                     {item.imageUrl ? (
                       <img
-                        src={item.imageUrl}
+                        src={resolveImageUrl(item.imageUrl)}
                         alt={item.name}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                       />

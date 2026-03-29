@@ -9,6 +9,7 @@ import {
 } from '../../services/portfolioService'
 import { getCategories } from '../../services/categoryService'
 import ImageUploadInput from '../../components/ImageUploadInput'
+import { resolveImageUrl } from '../../utils/imageUrl'
 import ConfirmModal from '../../components/ConfirmModal'
 import type { PortfolioItem, Category } from '../../types'
 
@@ -187,7 +188,7 @@ export default function PortfolioManager() {
                 <div key={item.id} className="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm group">
                   <div className="relative h-48 overflow-hidden">
                     {item.imageUrl ? (
-                      <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                      <img src={resolveImageUrl(item.imageUrl)} alt={item.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                     ) : (
                       <div className="w-full h-full bg-surface-container flex items-center justify-center">
                         <span className="material-symbols-outlined text-4xl text-outline">image</span>

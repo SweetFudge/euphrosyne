@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getPortfolio } from '../services/portfolioService'
 import type { PortfolioItem } from '../types'
+import { resolveImageUrl } from '../utils/imageUrl'
 
 interface PortfolioGridProps {
   limit?: number
@@ -63,7 +64,7 @@ export default function PortfolioGrid({ limit }: PortfolioGridProps) {
                 className={`${getColSpan(index)} group relative overflow-hidden rounded-xl`}
               >
                 <img
-                  src={item.imageUrl}
+                  src={resolveImageUrl(item.imageUrl)}
                   alt={item.title}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getPortfolio } from '../services/portfolioService'
 import type { PortfolioItem } from '../types'
+import { resolveImageUrl } from '../utils/imageUrl'
 
 export default function PortfolioPage() {
   const [items, setItems] = useState<PortfolioItem[]>([])
@@ -100,7 +101,7 @@ export default function PortfolioPage() {
               {filtered.map(item => (
                 <div key={item.id} className="group relative aspect-[4/3] overflow-hidden rounded-2xl shadow-sm">
                   <img
-                    src={item.imageUrl}
+                    src={resolveImageUrl(item.imageUrl)}
                     alt={item.title}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />

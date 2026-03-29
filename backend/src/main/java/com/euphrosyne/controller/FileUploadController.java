@@ -21,6 +21,9 @@ public class FileUploadController {
     @Value("${app.upload.dir:uploads}")
     private String uploadDir;
 
+    @Value("${app.base-url:}")
+    private String baseUrl;
+
     @PostMapping
     public ResponseEntity<Map<String, String>> upload(@RequestParam("file") MultipartFile file) throws IOException {
         if (file.isEmpty()) {
@@ -42,6 +45,7 @@ public class FileUploadController {
         Path filePath = uploadPath.resolve(filename);
         Files.copy(file.getInputStream(), filePath);
 
-        return ResponseEntity.ok(Map.of("url", "/uploads/" + filename));
+        String url = baseUrl.isEmpty() ? "/uploads/" + filename : baseUrl + "/uploads/" + filename;
+        return ResponseEntity.ok(Map.of("url", url));
     }
 }

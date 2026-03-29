@@ -2,6 +2,7 @@ package com.euphrosyne.service;
 
 import com.euphrosyne.dto.ContactMessageDto;
 import com.euphrosyne.model.ContactMessage;
+import com.euphrosyne.exception.ResourceNotFoundException;
 import com.euphrosyne.repository.ContactMessageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,7 @@ public class ContactService {
 
     public ContactMessage markAsRead(Long id) {
         ContactMessage msg = contactMessageRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Message non trouvé : " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Message non trouvé : " + id));
         msg.setRead(true);
         return contactMessageRepository.save(msg);
     }

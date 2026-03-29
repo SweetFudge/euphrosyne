@@ -10,6 +10,7 @@ import Home from './pages/Home'
 import Histoire from './pages/Histoire'
 import Catalogue from './pages/Catalogue'
 import PortfolioPage from './pages/PortfolioPage'
+import PortfolioDetail from './pages/PortfolioDetail'
 import Contact from './pages/Contact'
 
 // Admin pages
@@ -44,6 +45,7 @@ export default function App() {
           <Route path="/histoire" element={<PublicLayout><Histoire /></PublicLayout>} />
           <Route path="/catalogue" element={<PublicLayout><Catalogue /></PublicLayout>} />
           <Route path="/portfolio" element={<PublicLayout><PortfolioPage /></PublicLayout>} />
+          <Route path="/portfolio/:id" element={<PublicLayout><PortfolioDetail /></PublicLayout>} />
           <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />
           <Route path="/reservation" element={<Navigate to="/contact" replace />} />
 

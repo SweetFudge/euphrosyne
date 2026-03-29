@@ -2,6 +2,7 @@ package com.euphrosyne.service;
 
 import com.euphrosyne.dto.CatalogueItemDto;
 import com.euphrosyne.model.*;
+import com.euphrosyne.exception.ResourceNotFoundException;
 import com.euphrosyne.repository.CatalogueItemRepository;
 import com.euphrosyne.repository.CategoryRepository;
 import com.euphrosyne.repository.LabelRepository;
@@ -40,7 +41,7 @@ public class CatalogueService {
 
     public CatalogueItem update(Long id, CatalogueItemDto dto) {
         CatalogueItem item = catalogueItemRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Article non trouvé : " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Article non trouvé : " + id));
         item.setName(dto.getName());
         item.setImageUrl(dto.getImageUrl());
         item.setDescription(dto.getDescription());
@@ -51,7 +52,7 @@ public class CatalogueService {
 
     public CatalogueItem toggleStatus(Long id) {
         CatalogueItem item = catalogueItemRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Article non trouvé : " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Article non trouvé : " + id));
         item.setStatus(item.getStatus() == ItemStatus.DRAFT ? ItemStatus.PUBLISHED : ItemStatus.DRAFT);
         return catalogueItemRepository.save(item);
     }

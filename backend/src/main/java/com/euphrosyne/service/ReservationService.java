@@ -2,6 +2,7 @@ package com.euphrosyne.service;
 
 import com.euphrosyne.dto.ReservationRequestDto;
 import com.euphrosyne.model.Reservation;
+import com.euphrosyne.exception.ResourceNotFoundException;
 import com.euphrosyne.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -35,7 +36,7 @@ public class ReservationService {
 
     public Reservation updateStatus(Long id, Reservation.Status status) {
         Reservation reservation = reservationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Réservation non trouvée : " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Réservation non trouvée : " + id));
         reservation.setStatus(status);
         return reservationRepository.save(reservation);
     }

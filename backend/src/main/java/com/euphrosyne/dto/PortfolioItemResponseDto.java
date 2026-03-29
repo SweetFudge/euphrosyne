@@ -4,6 +4,7 @@ import com.euphrosyne.model.ItemStatus;
 import lombok.Data;
 
 import java.time.Instant;
+import java.util.List;
 
 @Data
 public class PortfolioItemResponseDto {
@@ -15,4 +16,5 @@ public class PortfolioItemResponseDto {
     private ItemStatus status;
     private CategoryDto category;
     private Instant createdAt;
+    private List<PortfolioPhotoResponseDto> photos;
 }

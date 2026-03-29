@@ -4,6 +4,7 @@ import com.euphrosyne.dto.PortfolioItemDto;
 import com.euphrosyne.model.*;
 import com.euphrosyne.repository.CategoryRepository;
 import com.euphrosyne.repository.PortfolioItemRepository;
+import com.euphrosyne.repository.PortfolioPhotoRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,6 +24,9 @@ class PortfolioServiceTest {
 
     @Mock
     private PortfolioItemRepository portfolioItemRepository;
+
+    @Mock
+    private PortfolioPhotoRepository portfolioPhotoRepository;
 
     @Mock
     private CategoryRepository categoryRepository;
@@ -143,5 +147,98 @@ class PortfolioServiceTest {
 
         // then
         verify(portfolioItemRepository).deleteById(1L);
+    }
+
+    @Test
+    void shouldGetById_whenExists() {
+        // given
+        PortfolioItem item = PortfolioItem.builder().id(1L).title("Mariage Dupont").build();
+        when(portfolioItemRepository.findById(1L)).thenReturn(Optional.of(item));
+
+        // when
+        PortfolioItem result = portfolioService.findById(1L);
+
+        // then
+        assertThat(result.getId()).isEqualTo(1L);
+        assertThat(result.getTitle()).isEqualTo("Mariage Dupont");
+    }
+
+    @Test
+    void shouldThrow_whenPortfolioNotFound() {
+        // given
+        when(portfolioItemRepository.findById(99L)).thenReturn(Optional.empty());
+
+        // when / then
+        assertThatThrownBy(() -> portfolioService.findById(99L))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("99");
+    }
+
+    @Test
+    void shouldReturnPublishedItem_whenFindPublishedById() {
+        // given
+        PortfolioItem item = PortfolioItem.builder().id(1L).status(ItemStatus.PUBLISHED).build();
+        when(portfolioItemRepository.findById(1L)).thenReturn(Optional.of(item));
+
+        // when
+        PortfolioItem result = portfolioService.findPublishedById(1L);
+
+        // then
+        assertThat(result.getStatus()).isEqualTo(ItemStatus.PUBLISHED);
+    }
+
+    @Test
+    void shouldThrow_whenFindPublishedById_andItemIsDraft() {
+        // given
+        PortfolioItem item = PortfolioItem.builder().id(1L).status(ItemStatus.DRAFT).build();
+        when(portfolioItemRepository.findById(1L)).thenReturn(Optional.of(item));
+
+        // when / then
+        assertThatThrownBy(() -> portfolioService.findPublishedById(1L))
+                .isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    void shouldAddPhoto_whenValidInput() {
+        // given
+        PortfolioItem item = PortfolioItem.builder().id(1L).build();
+        when(portfolioItemRepository.findById(1L)).thenReturn(Optional.of(item));
+        when(portfolioPhotoRepository.findByPortfolioItemIdOrderByDisplayOrderAscCreatedAtAsc(1L))
+                .thenReturn(List.of());
+        PortfolioPhoto saved = PortfolioPhoto.builder().id(10L).imageUrl("/uploads/photo.jpg").displayOrder(0).build();
+        when(portfolioPhotoRepository.save(any(PortfolioPhoto.class))).thenReturn(saved);
+
+        // when
+        PortfolioPhoto result = portfolioService.addPhoto(1L, "/uploads/photo.jpg");
+
+        // then
+        assertThat(result.getImageUrl()).isEqualTo("/uploads/photo.jpg");
+        assertThat(result.getDisplayOrder()).isEqualTo(0);
+    }
+
+    @Test
+    void shouldDeletePhoto_whenExists() {
+        // given
+        PortfolioItem item = PortfolioItem.builder().id(1L).build();
+        PortfolioPhoto photo = PortfolioPhoto.builder().id(10L).portfolioItem(item).build();
+        when(portfolioPhotoRepository.findById(10L)).thenReturn(Optional.of(photo));
+
+        // when
+        portfolioService.deletePhoto(1L, 10L);
+
+        // then
+        verify(portfolioPhotoRepository).delete(photo);
+    }
+
+    @Test
+    void shouldThrow_whenDeletingPhotoFromWrongPortfolio() {
+        // given
+        PortfolioItem otherItem = PortfolioItem.builder().id(99L).build();
+        PortfolioPhoto photo = PortfolioPhoto.builder().id(10L).portfolioItem(otherItem).build();
+        when(portfolioPhotoRepository.findById(10L)).thenReturn(Optional.of(photo));
+
+        // when / then
+        assertThatThrownBy(() -> portfolioService.deletePhoto(1L, 10L))
+                .isInstanceOf(RuntimeException.class);
     }
 }

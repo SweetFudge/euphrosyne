@@ -59,8 +59,9 @@ export default function PortfolioGrid({ limit }: PortfolioGridProps) {
         {items.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:h-[800px]">
             {items.map((item, index) => (
-              <div
+              <Link
                 key={item.id}
+                to={`/portfolio/${item.id}`}
                 className={`${getColSpan(index)} group relative overflow-hidden rounded-xl`}
               >
                 <img
@@ -74,7 +75,7 @@ export default function PortfolioGrid({ limit }: PortfolioGridProps) {
                   </span>
                   <h3 className="text-white font-headline text-2xl">{item.title}</h3>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         ) : (

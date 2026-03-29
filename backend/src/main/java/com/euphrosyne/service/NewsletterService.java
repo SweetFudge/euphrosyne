@@ -1,6 +1,7 @@
 package com.euphrosyne.service;
 
 import com.euphrosyne.model.Newsletter;
+import com.euphrosyne.exception.ConflictException;
 import com.euphrosyne.repository.NewsletterRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ public class NewsletterService {
 
     public Newsletter subscribe(String email) {
         if (newsletterRepository.existsByEmail(email)) {
-            throw new RuntimeException("Cet email est déjà inscrit.");
+            throw new ConflictException("Cet email est déjà inscrit.");
         }
         Newsletter subscriber = Newsletter.builder()
                 .email(email)

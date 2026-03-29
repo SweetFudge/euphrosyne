@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { getPortfolio } from '../services/portfolioService'
 import type { PortfolioItem } from '../types'
 import { resolveImageUrl } from '../utils/imageUrl'
 
 export default function PortfolioPage() {
+  const navigate = useNavigate()
   const [items, setItems] = useState<PortfolioItem[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<string | null>(null)
@@ -99,7 +101,7 @@ export default function PortfolioPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filtered.map(item => (
-                <div key={item.id} className="group relative aspect-[4/3] overflow-hidden rounded-2xl shadow-sm">
+                <div key={item.id} onClick={() => navigate(`/portfolio/${item.id}`)} className="cursor-pointer group relative aspect-[4/3] overflow-hidden rounded-2xl shadow-sm">
                   <img
                     src={resolveImageUrl(item.imageUrl)}
                     alt={item.title}

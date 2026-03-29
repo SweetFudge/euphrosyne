@@ -32,6 +32,12 @@ export interface ContactMessage {
   createdAt: string
 }
 
+export interface PortfolioPhoto {
+  id: number
+  imageUrl: string
+  displayOrder: number
+}
+
 export interface PortfolioItem {
   id: number
   title: string
@@ -41,6 +47,7 @@ export interface PortfolioItem {
   description: string
   status: ItemStatus
   createdAt: string
+  photos?: PortfolioPhoto[]
 }
 
 export interface Reservation {

@@ -47,6 +47,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/portfolio").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/portfolio/{id:[0-9]+}").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/catalogue").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/catalogue/{id:[0-9]+}").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/contacts").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/labels").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/categories").permitAll()

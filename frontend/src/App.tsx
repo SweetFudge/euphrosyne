@@ -9,6 +9,7 @@ import type { ReactNode } from 'react'
 import Home from './pages/Home'
 import Histoire from './pages/Histoire'
 import Catalogue from './pages/Catalogue'
+import CatalogueDetail from './pages/CatalogueDetail'
 import PortfolioPage from './pages/PortfolioPage'
 import PortfolioDetail from './pages/PortfolioDetail'
 import Contact from './pages/Contact'
@@ -44,6 +45,7 @@ export default function App() {
           <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
           <Route path="/histoire" element={<PublicLayout><Histoire /></PublicLayout>} />
           <Route path="/catalogue" element={<PublicLayout><Catalogue /></PublicLayout>} />
+          <Route path="/catalogue/:id" element={<PublicLayout><CatalogueDetail /></PublicLayout>} />
           <Route path="/portfolio" element={<PublicLayout><PortfolioPage /></PublicLayout>} />
           <Route path="/portfolio/:id" element={<PublicLayout><PortfolioDetail /></PublicLayout>} />
           <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />

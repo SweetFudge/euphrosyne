@@ -72,6 +72,12 @@ export interface NewsletterSubscriber {
   active: boolean
 }
 
+export interface CataloguePhoto {
+  id: number
+  imageUrl: string
+  displayOrder: number
+}
+
 export interface CatalogueItem {
   id: number
   name: string
@@ -80,6 +86,7 @@ export interface CatalogueItem {
   category: Category | null
   labels: Label[]
   status: ItemStatus
+  photos?: CataloguePhoto[]
 }
 
 export interface NewsletterTemplate {

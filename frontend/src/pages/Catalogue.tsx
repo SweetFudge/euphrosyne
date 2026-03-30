@@ -98,7 +98,7 @@ export default function Catalogue() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filtered.map(item => (
-                <div key={item.id} className="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow group">
+                <Link key={item.id} to={`/catalogue/${item.id}`} className="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow group">
                   {/* Image */}
                   <div className="relative h-56 overflow-hidden">
                     {item.imageUrl ? (
@@ -142,7 +142,7 @@ export default function Catalogue() {
                       </div>
                     )}
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           )}

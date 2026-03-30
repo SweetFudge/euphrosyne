@@ -14,4 +14,5 @@ public class CatalogueItemResponseDto {
     private ItemStatus status;
     private CategoryDto category;
     private List<LabelDto> labels;
+    private List<CataloguePhotoResponseDto> photos;
 }

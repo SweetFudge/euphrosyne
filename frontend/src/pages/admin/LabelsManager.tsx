@@ -199,6 +199,7 @@ export default function LabelsManager() {
   const [categories, setCategories] = useState<Category[]>([])
   const [labels, setLabels] = useState<Label[]>([])
   const [loading, setLoading] = useState(true)
+  const [deleting, setDeleting] = useState(false)
   const [confirm, setConfirm] = useState<ConfirmState>(closedConfirm)
 
   const load = () => {
@@ -219,9 +220,14 @@ export default function LabelsManager() {
       title: 'Supprimer la catégorie',
       message: 'Cette action est irréversible.',
       onConfirm: async () => {
-        await adminDeleteCategory(id)
-        setCategories(prev => prev.filter(c => c.id !== id))
-        setConfirm(closedConfirm)
+        setDeleting(true)
+        try {
+          await adminDeleteCategory(id)
+          setCategories(prev => prev.filter(c => c.id !== id))
+          setConfirm(closedConfirm)
+        } finally {
+          setDeleting(false)
+        }
       },
     })
   }
@@ -237,9 +243,14 @@ export default function LabelsManager() {
       title: "Supprimer l'étiquette",
       message: 'Cette action est irréversible.',
       onConfirm: async () => {
-        await adminDeleteLabel(id)
-        setLabels(prev => prev.filter(l => l.id !== id))
-        setConfirm(closedConfirm)
+        setDeleting(true)
+        try {
+          await adminDeleteLabel(id)
+          setLabels(prev => prev.filter(l => l.id !== id))
+          setConfirm(closedConfirm)
+        } finally {
+          setDeleting(false)
+        }
       },
     })
   }
@@ -288,6 +299,7 @@ export default function LabelsManager() {
         open={confirm.open}
         title={confirm.title}
         message={confirm.message}
+        loading={deleting}
         onConfirm={confirm.onConfirm}
         onCancel={() => setConfirm(closedConfirm)}
       />

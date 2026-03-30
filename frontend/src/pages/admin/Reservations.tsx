@@ -26,6 +26,8 @@ export default function Reservations() {
   const [reservations, setReservations] = useState<Reservation[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<Filter>('ALL')
+  const [statusLoading, setStatusLoading] = useState<number | null>(null)
+  const [deleting, setDeleting] = useState(false)
   const [confirm, setConfirm] = useState<{ open: boolean; id: number }>({ open: false, id: 0 })
 
   const load = () => {
@@ -37,8 +39,13 @@ export default function Reservations() {
   useEffect(() => { load() }, [])
 
   const handleStatus = async (id: number, status: ReservationStatus) => {
-    await adminUpdateReservationStatus(id, status)
-    load()
+    setStatusLoading(id)
+    try {
+      await adminUpdateReservationStatus(id, status)
+      load()
+    } finally {
+      setStatusLoading(null)
+    }
   }
 
   const handleDelete = (id: number) => {
@@ -46,9 +53,14 @@ export default function Reservations() {
   }
 
   const doDelete = async () => {
-    await adminDeleteReservation(confirm.id)
-    setConfirm({ open: false, id: 0 })
-    load()
+    setDeleting(true)
+    try {
+      await adminDeleteReservation(confirm.id)
+      setConfirm({ open: false, id: 0 })
+      load()
+    } finally {
+      setDeleting(false)
+    }
   }
 
   const filtered = filter === 'ALL' ? reservations : reservations.filter(r => r.status === filter)
@@ -130,26 +142,35 @@ export default function Reservations() {
                     {r.status !== 'CONFIRMED' && (
                       <button
                         onClick={() => handleStatus(r.id, 'CONFIRMED')}
-                        className="flex items-center gap-1 px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm hover:bg-green-200 transition-colors"
+                        disabled={statusLoading !== null}
+                        className="flex items-center gap-1 px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm hover:bg-green-200 transition-colors disabled:opacity-50"
                       >
-                        <span className="material-symbols-outlined text-base">check</span>
+                        <span className={`material-symbols-outlined text-base ${statusLoading === r.id ? 'animate-spin' : ''}`}>
+                          {statusLoading === r.id ? 'progress_activity' : 'check'}
+                        </span>
                         Confirmer
                       </button>
                     )}
                     {r.status !== 'REJECTED' && (
                       <button
                         onClick={() => handleStatus(r.id, 'REJECTED')}
-                        className="flex items-center gap-1 px-4 py-2 bg-red-100 text-red-800 rounded-full text-sm hover:bg-red-200 transition-colors"
+                        disabled={statusLoading !== null}
+                        className="flex items-center gap-1 px-4 py-2 bg-red-100 text-red-800 rounded-full text-sm hover:bg-red-200 transition-colors disabled:opacity-50"
                       >
-                        <span className="material-symbols-outlined text-base">close</span>
+                        <span className={`material-symbols-outlined text-base ${statusLoading === r.id ? 'animate-spin' : ''}`}>
+                          {statusLoading === r.id ? 'progress_activity' : 'close'}
+                        </span>
                         Refuser
                       </button>
                     )}
                     <button
                       onClick={() => handleDelete(r.id)}
-                      className="flex items-center gap-1 px-4 py-2 bg-surface-container text-on-surface-variant rounded-full text-sm hover:bg-error-container hover:text-on-error-container transition-colors"
+                      disabled={deleting || statusLoading !== null}
+                      className="flex items-center gap-1 px-4 py-2 bg-surface-container text-on-surface-variant rounded-full text-sm hover:bg-error-container hover:text-on-error-container transition-colors disabled:opacity-50"
                     >
-                      <span className="material-symbols-outlined text-base">delete</span>
+                      <span className={`material-symbols-outlined text-base ${deleting && confirm.id === r.id ? 'animate-spin' : ''}`}>
+                        {deleting && confirm.id === r.id ? 'progress_activity' : 'delete'}
+                      </span>
                     </button>
                   </div>
                 </div>
@@ -162,6 +183,7 @@ export default function Reservations() {
         open={confirm.open}
         title="Supprimer la réservation"
         message="Cette action est irréversible."
+        loading={deleting}
         onConfirm={doDelete}
         onCancel={() => setConfirm({ open: false, id: 0 })}
       />

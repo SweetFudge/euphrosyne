@@ -43,6 +43,7 @@ export default function CatalogueManager() {
   const [expandedId, setExpandedId] = useState<number | null>(null)
   const [photos, setPhotos] = useState<Record<number, CataloguePhoto[]>>({})
   const [uploadProgress, setUploadProgress] = useState<{ current: number; total: number } | null>(null)
+  const [coverLoading, setCoverLoading] = useState<number | null>(null)
   const photoInputRef = useRef<HTMLInputElement>(null)
 
   const load = () => {
@@ -140,17 +141,22 @@ export default function CatalogueManager() {
     setPhotos(prev => ({ ...prev, [catalogueId]: prev[catalogueId].filter(p => p.id !== photoId) }))
   }
 
-  const handleSetCover = async (item: CatalogueItem, imageUrl: string) => {
+  const handleSetCover = async (item: CatalogueItem, photo: CataloguePhoto) => {
+    setCoverLoading(photo.id)
     const payload = {
       name: item.name,
-      imageUrl,
+      imageUrl: photo.imageUrl,
       description: item.description ?? '',
       categoryId: item.category?.id ?? null,
       labelIds: item.labels.map(l => l.id),
       status: item.status,
     }
-    const updated = await adminUpdateCatalogueItem(item.id, payload)
-    setItems(items.map(i => i.id === updated.id ? updated : i))
+    try {
+      const updated = await adminUpdateCatalogueItem(item.id, payload)
+      setItems(items.map(i => i.id === updated.id ? updated : i))
+    } finally {
+      setCoverLoading(null)
+    }
   }
 
   return (
@@ -367,12 +373,19 @@ export default function CatalogueManager() {
                                     Couverture
                                   </div>
                                 )}
+                                {/* Voile de chargement couverture */}
+                                {coverLoading === photo.id && (
+                                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                                    <span className="material-symbols-outlined animate-spin text-white text-2xl">progress_activity</span>
+                                  </div>
+                                )}
                                 <div className="absolute inset-0 bg-on-background/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1">
                                   {!isCover && (
                                     <button
                                       title="Définir comme couverture"
-                                      onClick={() => handleSetCover(item, photo.imageUrl)}
-                                      className="p-1 bg-white/90 rounded-full hover:bg-white transition-colors"
+                                      onClick={() => handleSetCover(item, photo)}
+                                      disabled={coverLoading !== null}
+                                      className="p-1 bg-white/90 rounded-full hover:bg-white transition-colors disabled:opacity-50"
                                     >
                                       <span className="material-symbols-outlined text-base text-primary">star</span>
                                     </button>
@@ -380,7 +393,8 @@ export default function CatalogueManager() {
                                   <button
                                     title="Supprimer"
                                     onClick={() => handleDeletePhoto(item.id, photo.id)}
-                                    className="p-1 bg-white/90 rounded-full hover:bg-white transition-colors"
+                                    disabled={coverLoading !== null}
+                                    className="p-1 bg-white/90 rounded-full hover:bg-white transition-colors disabled:opacity-50"
                                   >
                                     <span className="material-symbols-outlined text-base text-error">delete</span>
                                   </button>

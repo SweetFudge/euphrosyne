@@ -3,6 +3,7 @@ interface ConfirmModalProps {
   title: string
   message: string
   confirmLabel?: string
+  loading?: boolean
   onConfirm: () => void
   onCancel: () => void
 }
@@ -12,6 +13,7 @@ export default function ConfirmModal({
   title,
   message,
   confirmLabel = 'Supprimer',
+  loading = false,
   onConfirm,
   onCancel,
 }: ConfirmModalProps) {
@@ -22,7 +24,7 @@ export default function ConfirmModal({
       {/* Overlay */}
       <div
         className="absolute inset-0 bg-on-background/30 backdrop-blur-sm"
-        onClick={onCancel}
+        onClick={loading ? undefined : onCancel}
       />
 
       {/* Card */}
@@ -42,15 +44,20 @@ export default function ConfirmModal({
         <div className="flex gap-3">
           <button
             onClick={onCancel}
-            className="flex-1 px-4 py-2.5 rounded-xl border border-outline-variant text-on-surface-variant text-sm font-label hover:bg-surface-container transition-colors"
+            disabled={loading}
+            className="flex-1 px-4 py-2.5 rounded-xl border border-outline-variant text-on-surface-variant text-sm font-label hover:bg-surface-container transition-colors disabled:opacity-50"
           >
             Annuler
           </button>
           <button
             onClick={onConfirm}
-            className="flex-1 px-4 py-2.5 rounded-xl bg-error text-on-error text-sm font-label font-bold hover:opacity-90 transition-opacity"
+            disabled={loading}
+            className="flex-1 px-4 py-2.5 rounded-xl bg-error text-on-error text-sm font-label font-bold hover:opacity-90 transition-opacity disabled:opacity-70 flex items-center justify-center gap-2"
           >
-            {confirmLabel}
+            {loading && (
+              <span className="material-symbols-outlined text-base animate-spin">progress_activity</span>
+            )}
+            {loading ? 'Suppression…' : confirmLabel}
           </button>
         </div>
       </div>

@@ -150,6 +150,7 @@ function ComposeTab({
   const [templateName, setTemplateName] = useState('')
   const [saving, setSaving] = useState(false)
   const [sending, setSending] = useState(false)
+  const [deleting, setDeleting] = useState(false)
   const [editorReady, setEditorReady] = useState(false)
   const [saveModal, setSaveModal] = useState(false)
 
@@ -330,9 +331,14 @@ export default function NewsletterAdmin() {
   const handleDeleteTemplate = (id: number) => setConfirm({ open: true, id })
 
   const doDeleteTemplate = async () => {
-    await adminDeleteTemplate(confirm.id)
-    setTemplates(prev => prev.filter(t => t.id !== confirm.id))
-    setConfirm({ open: false, id: 0 })
+    setDeleting(true)
+    try {
+      await adminDeleteTemplate(confirm.id)
+      setTemplates(prev => prev.filter(t => t.id !== confirm.id))
+      setConfirm({ open: false, id: 0 })
+    } finally {
+      setDeleting(false)
+    }
   }
 
   const activeSubscribersCount = subscribers.filter(s => s.active).length
@@ -405,6 +411,7 @@ export default function NewsletterAdmin() {
         open={confirm.open}
         title="Supprimer le template"
         message="Cette action est irréversible."
+        loading={deleting}
         onConfirm={doDeleteTemplate}
         onCancel={() => setConfirm({ open: false, id: 0 })}
       />

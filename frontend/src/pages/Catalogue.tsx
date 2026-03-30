@@ -112,6 +112,13 @@ export default function Catalogue() {
                         <span className="material-symbols-outlined text-5xl text-outline">image</span>
                       </div>
                     )}
+                    {/* Overlay hover */}
+                    <div className="absolute inset-0 bg-on-background/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                      <span className="flex items-center gap-2 bg-white/90 text-on-background rounded-full px-4 py-2 text-sm font-label translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 delay-75">
+                        <span className="material-symbols-outlined text-base text-primary">photo_library</span>
+                        Voir l'album
+                      </span>
+                    </div>
                     {item.category && (
                       <span className="absolute top-3 left-3 bg-surface-container-lowest/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-label text-on-surface">
                         {item.category.name}

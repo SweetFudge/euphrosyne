@@ -11,14 +11,21 @@ import type { ContactMessage } from '../../types'
 export default function ContactsAdmin() {
   const [messages, setMessages] = useState<ContactMessage[]>([])
   const [loading, setLoading] = useState(true)
+  const [markReadLoading, setMarkReadLoading] = useState<number | null>(null)
+  const [deleting, setDeleting] = useState(false)
   const [confirm, setConfirm] = useState<{ open: boolean; id: number }>({ open: false, id: 0 })
 
   const load = () => { adminGetContacts().then(setMessages).finally(() => setLoading(false)) }
   useEffect(() => { load() }, [])
 
   const handleMarkRead = async (id: number) => {
-    await adminMarkContactAsRead(id)
-    setMessages(messages.map(m => m.id === id ? { ...m, read: true } : m))
+    setMarkReadLoading(id)
+    try {
+      await adminMarkContactAsRead(id)
+      setMessages(messages.map(m => m.id === id ? { ...m, read: true } : m))
+    } finally {
+      setMarkReadLoading(null)
+    }
   }
 
   const handleDelete = (id: number) => {
@@ -26,9 +33,14 @@ export default function ContactsAdmin() {
   }
 
   const doDelete = async () => {
-    await adminDeleteContact(confirm.id)
-    setMessages(messages.filter(m => m.id !== confirm.id))
-    setConfirm({ open: false, id: 0 })
+    setDeleting(true)
+    try {
+      await adminDeleteContact(confirm.id)
+      setMessages(messages.filter(m => m.id !== confirm.id))
+      setConfirm({ open: false, id: 0 })
+    } finally {
+      setDeleting(false)
+    }
   }
 
   const unreadCount = messages.filter(m => !m.read).length
@@ -106,19 +118,25 @@ export default function ContactsAdmin() {
                     {!msg.read && (
                       <button
                         onClick={() => handleMarkRead(msg.id)}
-                        className="flex items-center gap-1 px-3 py-2 bg-surface-container text-on-surface-variant rounded-full text-xs hover:bg-surface-container-high transition-colors"
+                        disabled={markReadLoading !== null}
+                        className="flex items-center gap-1 px-3 py-2 bg-surface-container text-on-surface-variant rounded-full text-xs hover:bg-surface-container-high transition-colors disabled:opacity-50"
                         title="Marquer comme lu"
                       >
-                        <span className="material-symbols-outlined text-sm">mark_email_read</span>
-                        Marquer lu
+                        <span className={`material-symbols-outlined text-sm ${markReadLoading === msg.id ? 'animate-spin' : ''}`}>
+                          {markReadLoading === msg.id ? 'progress_activity' : 'mark_email_read'}
+                        </span>
+                        {markReadLoading === msg.id ? 'En cours…' : 'Marquer lu'}
                       </button>
                     )}
                     <button
                       onClick={() => handleDelete(msg.id)}
-                      className="flex items-center gap-1 px-3 py-2 bg-error-container/50 text-on-error-container rounded-full text-xs hover:bg-error-container transition-colors"
+                      disabled={deleting}
+                      className="flex items-center gap-1 px-3 py-2 bg-error-container/50 text-on-error-container rounded-full text-xs hover:bg-error-container transition-colors disabled:opacity-50"
                       title="Supprimer"
                     >
-                      <span className="material-symbols-outlined text-sm">delete</span>
+                      <span className={`material-symbols-outlined text-sm ${deleting && confirm.id === msg.id ? 'animate-spin' : ''}`}>
+                        {deleting && confirm.id === msg.id ? 'progress_activity' : 'delete'}
+                      </span>
                       Supprimer
                     </button>
                   </div>
@@ -132,6 +150,7 @@ export default function ContactsAdmin() {
         open={confirm.open}
         title="Supprimer le message"
         message="Cette action est irréversible."
+        loading={deleting}
         onConfirm={doDelete}
         onCancel={() => setConfirm({ open: false, id: 0 })}
       />

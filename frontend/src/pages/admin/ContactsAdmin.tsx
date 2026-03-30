@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import AdminLayout from '../../components/AdminLayout'
 import ConfirmModal from '../../components/ConfirmModal'
+import PageLoader from '../../components/PageLoader'
 import {
   adminGetContacts,
   adminMarkContactAsRead,
@@ -47,6 +48,7 @@ export default function ContactsAdmin() {
 
   return (
     <AdminLayout>
+      <PageLoader visible={loading} />
       <div className="space-y-6">
         <div>
           <h1 className="font-headline text-3xl text-on-background">Contacts</h1>
@@ -60,11 +62,7 @@ export default function ContactsAdmin() {
           </p>
         </div>
 
-        {loading ? (
-          <div className="text-center py-16">
-            <span className="material-symbols-outlined text-4xl text-primary animate-spin">progress_activity</span>
-          </div>
-        ) : messages.length === 0 ? (
+        {!loading && (messages.length === 0 ? (
           <div className="text-center py-16 text-on-surface-variant">Aucun message reçu pour l'instant.</div>
         ) : (
           <div className="space-y-4">
@@ -144,7 +142,7 @@ export default function ContactsAdmin() {
               </div>
             ))}
           </div>
-        )}
+        ))}
       </div>
       <ConfirmModal
         open={confirm.open}

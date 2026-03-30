@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import AdminLayout from '../../components/AdminLayout'
 import ConfirmModal from '../../components/ConfirmModal'
+import PageLoader from '../../components/PageLoader'
 import {
   adminGetReservations,
   adminUpdateReservationStatus,
@@ -67,6 +68,7 @@ export default function Reservations() {
 
   return (
     <AdminLayout>
+      <PageLoader visible={loading} />
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
@@ -88,11 +90,7 @@ export default function Reservations() {
           </div>
         </div>
 
-        {loading ? (
-          <div className="text-center py-16">
-            <span className="material-symbols-outlined text-4xl text-primary animate-spin">progress_activity</span>
-          </div>
-        ) : filtered.length === 0 ? (
+        {!loading && (filtered.length === 0 ? (
           <div className="text-center py-16 text-on-surface-variant">Aucune réservation.</div>
         ) : (
           <div className="space-y-4">
@@ -177,7 +175,7 @@ export default function Reservations() {
               </div>
             ))}
           </div>
-        )}
+        ))}
       </div>
       <ConfirmModal
         open={confirm.open}

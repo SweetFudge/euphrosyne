@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { getPortfolioItem } from '../services/portfolioService'
 import type { PortfolioItem } from '../types'
 import { resolveImageUrl } from '../utils/imageUrl'
+import PageLoader from '../components/PageLoader'
 
 export default function PortfolioDetail() {
   const { id } = useParams<{ id: string }>()
@@ -42,18 +43,12 @@ export default function PortfolioDetail() {
     return () => window.removeEventListener('keydown', handler)
   }, [lightboxIndex, closeLightbox, showPrev, showNext])
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <span className="material-symbols-outlined animate-spin text-4xl text-primary">progress_activity</span>
-      </div>
-    )
-  }
-
-  if (!item) return null
+  if (!loading && !item) return null
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <PageLoader visible={loading} />
+      {item && <div className="min-h-screen bg-background">
       {/* Hero */}
       <div className="relative h-72 md:h-96 overflow-hidden">
         <img
@@ -181,6 +176,7 @@ export default function PortfolioDetail() {
           )}
         </div>
       )}
-    </div>
+    </div>}
+    </>
   )
 }

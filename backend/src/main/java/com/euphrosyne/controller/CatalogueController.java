@@ -38,9 +38,7 @@ public class CatalogueController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CatalogueItemResponseDto> getById(@PathVariable Long id) {
-        CatalogueItemResponseDto dto = catalogueItemMapper.toResponse(catalogueService.findPublishedById(id));
-        dto.setPhotos(cataloguePhotoMapper.toResponseList(catalogueService.findPhotos(id)));
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.ok(catalogueItemMapper.toResponseWithPhotos(catalogueService.findPublishedByIdWithPhotos(id)));
     }
 
     @PostMapping

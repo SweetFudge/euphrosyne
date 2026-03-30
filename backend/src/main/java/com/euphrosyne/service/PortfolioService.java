@@ -42,6 +42,12 @@ public class PortfolioService {
                 .orElseThrow(() -> new ResourceNotFoundException("Portfolio non trouvé : " + id));
     }
 
+    public PortfolioItem findPublishedByIdWithPhotos(Long id) {
+        return portfolioItemRepository.findByIdWithPhotos(id)
+                .filter(item -> item.getStatus() == ItemStatus.PUBLISHED)
+                .orElseThrow(() -> new ResourceNotFoundException("Portfolio non trouvé : " + id));
+    }
+
     public List<PortfolioPhoto> findPhotos(Long portfolioItemId) {
         return portfolioPhotoRepository.findByPortfolioItemIdOrderByDisplayOrderAscCreatedAtAsc(portfolioItemId);
     }

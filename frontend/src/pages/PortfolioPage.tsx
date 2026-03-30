@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { getPortfolio } from '../services/portfolioService'
 import type { PortfolioItem } from '../types'
 import { resolveImageUrl } from '../utils/imageUrl'
+import PageLoader from '../components/PageLoader'
 
 export default function PortfolioPage() {
   const navigate = useNavigate()
@@ -32,6 +33,7 @@ export default function PortfolioPage() {
 
   return (
     <div className="pt-20">
+      <PageLoader visible={loading} />
 
       {/* Hero */}
       <section className="relative py-28 overflow-hidden">
@@ -89,11 +91,7 @@ export default function PortfolioPage() {
       {/* Grid */}
       <section className="py-16 bg-surface">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
-          {loading ? (
-            <div className="text-center py-24">
-              <span className="material-symbols-outlined animate-spin text-4xl text-primary">progress_activity</span>
-            </div>
-          ) : filtered.length === 0 ? (
+          {filtered.length === 0 && !loading ? (
             <div className="text-center py-24">
               <span className="material-symbols-outlined text-5xl text-outline mb-4 block">photo_library</span>
               <p className="text-on-surface-variant text-lg">Aucune réalisation dans cette catégorie pour le moment.</p>

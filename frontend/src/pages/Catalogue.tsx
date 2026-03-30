@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { getCatalogue } from '../services/catalogueService'
 import type { CatalogueItem } from '../types'
 import { resolveImageUrl } from '../utils/imageUrl'
+import PageLoader from '../components/PageLoader'
 
 const EVENT_BADGE_COLORS: Record<string, string> = {
   'Mariage': 'bg-amber-100 text-amber-800',
@@ -37,6 +38,7 @@ export default function Catalogue() {
 
   return (
     <div className="pt-20">
+      <PageLoader visible={loading} />
 
       {/* Hero */}
       <section className="py-24 bg-surface-container-low">
@@ -86,11 +88,7 @@ export default function Catalogue() {
             </div>
           )}
 
-          {loading ? (
-            <div className="text-center py-24">
-              <span className="material-symbols-outlined animate-spin text-4xl text-primary">progress_activity</span>
-            </div>
-          ) : filtered.length === 0 ? (
+          {filtered.length === 0 && !loading ? (
             <div className="text-center py-24">
               <span className="material-symbols-outlined text-5xl text-outline mb-4 block">inventory_2</span>
               <p className="text-on-surface-variant text-lg">Aucun article dans cette catégorie pour le moment.</p>

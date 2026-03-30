@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'react'
 import AdminLayout from '../../components/AdminLayout'
+import PageLoader from '../../components/PageLoader'
 import {
   adminGetCatalogue,
   adminCreateCatalogueItem,
@@ -161,6 +162,7 @@ export default function CatalogueManager() {
 
   return (
     <AdminLayout>
+      <PageLoader visible={loading} />
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
@@ -260,9 +262,7 @@ export default function CatalogueManager() {
           </div>
         )}
 
-        {loading ? (
-          <div className="text-center py-16"><span className="material-symbols-outlined text-4xl text-primary animate-spin">progress_activity</span></div>
-        ) : items.length === 0 ? (
+        {!loading && (items.length === 0 ? (
           <div className="text-center py-16 text-on-surface-variant">Aucun article. Ajoutez-en un pour commencer.</div>
         ) : (
           <div className="space-y-4">
@@ -410,7 +410,7 @@ export default function CatalogueManager() {
               )
             })}
           </div>
-        )}
+        ))}
       </div>
 
       <ConfirmModal

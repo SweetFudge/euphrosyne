@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'react'
 import AdminLayout from '../../components/AdminLayout'
+import PageLoader from '../../components/PageLoader'
 import {
   adminGetPortfolio,
   adminCreatePortfolioItem,
@@ -146,6 +147,7 @@ export default function PortfolioManager() {
 
   return (
     <AdminLayout>
+      <PageLoader visible={loading} />
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
@@ -231,9 +233,7 @@ export default function PortfolioManager() {
           </div>
         )}
 
-        {loading ? (
-          <div className="text-center py-16"><span className="material-symbols-outlined text-4xl text-primary animate-spin">progress_activity</span></div>
-        ) : (
+        {!loading && (
           <div className="space-y-4">
             {items.map(item => {
               const isPublished = item.status === 'PUBLISHED'

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { getCatalogueItem } from '../services/catalogueService'
 import type { CatalogueItem } from '../types'
 import { resolveImageUrl } from '../utils/imageUrl'
+import PageLoader from '../components/PageLoader'
 
 const EVENT_BADGE_COLORS: Record<string, string> = {
   'Mariage': 'bg-amber-100 text-amber-800',
@@ -59,18 +60,12 @@ export default function CatalogueDetail() {
     }
   }, [lightboxIndex, closeLightbox, showPrev, showNext])
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <span className="material-symbols-outlined animate-spin text-4xl text-primary">progress_activity</span>
-      </div>
-    )
-  }
-
-  if (!item) return null
+  if (!loading && !item) return null
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <PageLoader visible={loading} />
+      {item && <div className="min-h-screen bg-background">
       {/* Hero */}
       <div className="relative h-72 md:h-96 overflow-hidden">
         {item.imageUrl ? (
@@ -207,6 +202,7 @@ export default function CatalogueDetail() {
           )}
         </div>
       )}
-    </div>
+    </div>}
+    </>
   )
 }

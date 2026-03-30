@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import EmailEditor, { type EditorRef } from 'react-email-editor'
 import AdminLayout from '../../components/AdminLayout'
 import ConfirmModal from '../../components/ConfirmModal'
+import PageLoader from '../../components/PageLoader'
 import {
   adminGetSubscribers,
   adminGetTemplates,
@@ -352,6 +353,7 @@ export default function NewsletterAdmin() {
 
   return (
     <AdminLayout>
+      <PageLoader visible={loading} />
       <div className="space-y-6">
         <div>
           <h1 className="font-headline text-3xl text-on-background">Newsletter</h1>
@@ -379,11 +381,7 @@ export default function NewsletterAdmin() {
           ))}
         </div>
 
-        {loading ? (
-          <div className="text-center py-16">
-            <span className="material-symbols-outlined text-4xl text-primary animate-spin">progress_activity</span>
-          </div>
-        ) : (
+        {!loading && (
           <>
             {tab === 'subscribers' && <SubscribersTab subscribers={subscribers} />}
             {tab === 'compose' && (

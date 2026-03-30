@@ -147,6 +147,7 @@ class PortfolioServiceTest {
 
         // then
         verify(portfolioItemRepository).deleteById(1L);
+        verifyNoInteractions(portfolioPhotoRepository);
     }
 
     @Test

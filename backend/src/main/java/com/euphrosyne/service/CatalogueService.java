@@ -42,6 +42,12 @@ public class CatalogueService {
                 .orElseThrow(() -> new ResourceNotFoundException("Article non trouvé : " + id));
     }
 
+    public CatalogueItem findPublishedByIdWithPhotos(Long id) {
+        return catalogueItemRepository.findByIdWithPhotos(id)
+                .filter(item -> item.getStatus() == ItemStatus.PUBLISHED)
+                .orElseThrow(() -> new ResourceNotFoundException("Article non trouvé : " + id));
+    }
+
     public List<CataloguePhoto> findPhotos(Long catalogueItemId) {
         return cataloguePhotoRepository.findByCatalogueItemIdOrderByDisplayOrderAscCreatedAtAsc(catalogueItemId);
     }

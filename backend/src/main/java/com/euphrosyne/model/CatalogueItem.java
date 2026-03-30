@@ -44,6 +44,11 @@ public class CatalogueItem {
     @Builder.Default
     private ItemStatus status = ItemStatus.DRAFT;
 
+    @OneToMany(mappedBy = "catalogueItem", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OrderBy("displayOrder ASC, createdAt ASC")
+    @Builder.Default
+    private List<CataloguePhoto> photos = new ArrayList<>();
+
     @Column(nullable = false, updatable = false)
     @Builder.Default
     private Instant createdAt = Instant.now();

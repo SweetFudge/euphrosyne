@@ -6,6 +6,7 @@ import com.euphrosyne.dto.PortfolioPhotoResponseDto;
 import com.euphrosyne.mapper.PortfolioItemMapper;
 import com.euphrosyne.mapper.PortfolioPhotoMapper;
 import com.euphrosyne.service.PortfolioService;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -38,9 +39,7 @@ public class PortfolioController {
 
     @GetMapping("/{id}")
     public ResponseEntity<PortfolioItemResponseDto> getById(@PathVariable Long id) {
-        PortfolioItemResponseDto dto = portfolioItemMapper.toResponse(portfolioService.findPublishedById(id));
-        dto.setPhotos(portfolioPhotoMapper.toResponseList(portfolioService.findPhotos(id)));
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.ok(portfolioItemMapper.toResponseWithPhotos(portfolioService.findPublishedByIdWithPhotos(id)));
     }
 
     @PostMapping

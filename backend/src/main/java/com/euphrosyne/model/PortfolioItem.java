@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "portfolio_items")
@@ -36,6 +38,11 @@ public class PortfolioItem {
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private ItemStatus status = ItemStatus.DRAFT;
+
+    @OneToMany(mappedBy = "portfolioItem", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OrderBy("displayOrder ASC, createdAt ASC")
+    @Builder.Default
+    private List<PortfolioPhoto> photos = new ArrayList<>();
 
     @Column(nullable = false, updatable = false)
     @Builder.Default

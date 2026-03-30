@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import AdminLayout from '../../components/AdminLayout'
 import api from '../../services/api'
 import type { Stats } from '../../types'
+import PageLoader from '../../components/PageLoader'
 
 export default function Dashboard() {
   const [stats, setStats] = useState<Stats | null>(null)
@@ -23,17 +24,14 @@ export default function Dashboard() {
 
   return (
     <AdminLayout>
+      <PageLoader visible={loading} />
       <div className="space-y-8">
         <div>
           <h1 className="font-headline text-3xl text-on-background">Dashboard</h1>
           <p className="text-on-surface-variant mt-1">Vue d'ensemble de votre activité</p>
         </div>
 
-        {loading ? (
-          <div className="text-center py-16">
-            <span className="material-symbols-outlined text-4xl text-primary animate-spin">progress_activity</span>
-          </div>
-        ) : (
+        {!loading && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {statCards.map(({ icon, label, value, color }) => (
               <div key={label} className="bg-surface-container-lowest p-6 rounded-xl shadow-sm">

@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import AdminLayout from '../../components/AdminLayout'
 import ConfirmModal from '../../components/ConfirmModal'
+import PageLoader from '../../components/PageLoader'
 import {
   adminGetAllCategories,
   adminCreateCategory,
@@ -260,17 +261,14 @@ export default function LabelsManager() {
 
   return (
     <AdminLayout>
+      <PageLoader visible={loading} />
       <div className="space-y-6">
         <div>
           <h1 className="font-headline text-3xl text-on-background">Étiquettes & Catégories</h1>
           <p className="text-on-surface-variant mt-1">Gérez les catégories et labels utilisés dans le catalogue et le portfolio.</p>
         </div>
 
-        {loading ? (
-          <div className="text-center py-16">
-            <span className="material-symbols-outlined text-4xl text-primary animate-spin">progress_activity</span>
-          </div>
-        ) : (
+        {!loading && (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             <CategorySection
               title="Catégories Catalogue"

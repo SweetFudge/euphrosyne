@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <tile>Prévisualisation Newsletter — Élégance Célébration</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;1,400&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #e5e2dc; font-family: 'Manrope', sans-serif; padding: 40px 16px; }
+    .email-wrapper { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 4px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.10); }
+
+    /* ── En-tête ── */
+    .header { background: #745b00; padding: 28px 40px; text-align: center; }
+    .header-title { font-family: 'Noto Serif', serif; font-size: 22px; color: #ffffff; letter-spacing: 0.08em; text-transform: uppercase; }
+    .header-subtitle { font-family: 'Manrope', sans-serif; font-size: 11px; color: #eac249; letter-spacing: 0.2em; text-transform: uppercase; margin-top: 4px; }
+
+    /* ── Image héro ── */
+    .hero { position: relative; }
+    .hero-img { width: 100%; height: 280px; object-fit: cover; display: block; background: linear-gradient(135deg, #d5af37 0%, #a08020 50%, #745b00 100%); }
+    .hero-placeholder { width: 100%; height: 280px; background: linear-gradient(135deg, #f5e6b0 0%, #d5af37 50%, #a08020 100%); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 8px; }
+    .hero-placeholder-icon { font-size: 48px; opacity: 0.5; }
+    .hero-placeholder-text { font-family: 'Manrope', sans-serif; font-size: 12px; color: #745b00; opacity: 0.7; letter-spacing: 0.1em; }
+
+    /* ── Titre principal ── */
+    .title-block { background: #fcf9f3; padding: 40px 40px 24px; text-align: center; border-bottom: 1px solid #e5e2dc; }
+    .title-eyebrow { font-size: 11px; color: #d5af37; letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 12px; }
+    .title-main { font-family: 'Noto Serif', serif; font-size: 32px; color: #1c1c18; line-height: 1.25; }
+    .title-sub { font-size: 15px; color: #4d4635; margin-top: 10px; line-height: 1.6; }
+
+    /* ── Intro ── */
+    .intro { background: #fcf9f3; padding: 24px 40px 32px; text-align: center; }
+    .intro p { font-size: 14px; color: #4d4635; line-height: 1.8; max-width: 480px; margin: 0 auto; }
+
+    /* ── Séparateur ── */
+    .divider { padding: 0 40px; background: #fcf9f3; }
+    .divider-line { height: 1px; background: linear-gradient(to right, transparent, #d5af37, transparent); }
+    .divider-diamond { text-align: center; margin-top: -8px; }
+    .divider-diamond span { display: inline-block; background: #fcf9f3; padding: 0 12px; color: #d5af37; font-size: 14px; }
+
+    /* ── Colonnes ── */
+    .columns { background: #fcf9f3; padding: 32px 40px; display: flex; gap: 24px; }
+    .col { flex: 1; }
+    .col-icon { font-size: 28px; margin-bottom: 10px; }
+    .col-title { font-family: 'Noto Serif', serif; font-size: 16px; color: #745b00; margin-bottom: 8px; }
+    .col-text { font-size: 13px; color: #4d4635; line-height: 1.7; }
+    .col-separator { width: 1px; background: #e5e2dc; flex-shrink: 0; }
+
+    /* ── CTA ── */
+    .cta-block { background: #fcf9f3; padding: 8px 40px 40px; text-align: center; }
+    .cta-btn { display: inline-block; background: #745b00; color: #ffffff; font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 14px 36px; border-radius: 4px; text-decoration: none; }
+
+    /* ── Témoignage ── */
+    .testimonial { background: #f0eee8; padding: 32px 48px; text-align: center; border-top: 1px solid #e5e2dc; border-bottom: 1px solid #e5e2dc; }
+    .testimonial-quote { font-family: 'Noto Serif', serif; font-size: 16px; font-style: italic; color: #1c1c18; line-height: 1.7; }
+    .testimonial-author { font-size: 12px; color: #7f7663; margin-top: 12px; letter-spacing: 0.1em; text-transform: uppercase; }
+    .testimonial-stars { color: #d5af37; font-size: 16px; margin-bottom: 12px; letter-spacing: 4px; }
+
+    /* ── Footer ── */
+    .footer { background: #31312d; padding: 28px 40px; text-align: center; }
+    .footer-name { font-family: 'Noto Serif', serif; font-size: 15px; color: #eac249; margin-bottom: 8px; }
+    .footer-contact { font-size: 12px; color: #c8c6c5; margin-bottom: 16px; }
+    .footer-legal { font-size: 11px; color: #7f7663; line-height: 1.8; }
+    .footer-unsub { color: #7f7663; text-decoration: underline; }
+
+    /* ── Légende ── */
+    .legend { max-width: 600px; margin: 24px auto 0; }
+    .legend-title { font-family: 'Manrope', sans-serif; font-size: 11px; color: #7f7663; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 8px; }
+    .legend-items { display: flex; flex-wrap: wrap; gap: 8px; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #7f7663; background: #fff; padding: 4px 10px; border-radius: 4px; }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  </style>
+</head>
+<body>
+
+  <div class="email-wrapper">
+
+    <!-- ① EN-TÊTE -->
+    <div class="header">
+      <div class="header-title">Élégance Célébration</div>
+      <div class="header-subtitle">Art de recevoir · Événements sur mesure</div>
+    </div>
+
+    <!-- ② IMAGE HÉRO -->
+    <div class="hero">
+      <div class="hero-placeholder">
+        <div class="hero-placeholder-icon">💐</div>
+        <div class="hero-placeholder-text">Votre photo de mariage ici (600 × 280 px)</div>
+      </div>
+    </div>
+
+    <!-- ③ TITRE PRINCIPAL -->
+    <div class="title-block">
+      <div class="title-eyebrow">✦ Printemps 2026 ✦</div>
+      <div class="title-main">Votre mariage,<br/>notre passion</div>
+      <div class="title-sub">Faites de votre plus beau jour un souvenir inoubliable</div>
+    </div>
+
+    <!-- ④ INTRODUCTION -->
+    <div class="intro">
+      <p>Chaque mariage est une histoire unique. Chez Élégance Célébration, nous mettons tout notre savoir-faire au service de votre bonheur — de la décoration florale aux lumières féeriques, en passant par l'animation et le mobilier d'exception.</p>
+    </div>
+
+    <!-- SÉPARATEUR -->
+    <div class="divider">
+      <div class="divider-line"></div>
+      <div class="divider-diamond"><span>◆</span></div>
+    </div>
+
+    <!-- ⑤ DEUX COLONNES -->
+    <div class="columns">
+      <div class="col">
+        <div class="col-icon">✨</div>
+        <div class="col-title">Une décoration sur mesure</div>
+        <div class="col-text">Arches florales, tables d'honneur, allées lumineuses... chaque détail est orchestré avec soin pour refléter votre personnalité et créer l'ambiance de vos rêves.</div>
+      </div>
+      <div class="col-separator"></div>
+      <div class="col">
+        <div class="col-icon">🥂</div>
+        <div class="col-title">Un accompagnement de A à Z</div>
+        <div class="col-text">De la première rencontre jusqu'au dernier instant, notre équipe est à vos côtés pour que vous profitiez pleinement de votre journée, sans vous soucier de la logistique.</div>
+      </div>
+    </div>
+
+    <!-- ⑥ BOUTON CTA -->
+    <div class="cta-block">
+      <a href="#" class="cta-btn">Demander votre devis gratuit</a>
+    </div>
+
+    <!-- ⑦ TÉMOIGNAGE -->
+    <div class="testimonial">
+      <div class="testimonial-stars">★★★★★</div>
+      <div class="testimonial-quote">"Élégance Célébration a transformé notre vision en quelque chose de magique. Chaque détail était parfait, exactement comme nous l'avions imaginé."</div>
+      <div class="testimonial-author">— Sophie &amp; Thomas · Juin 2025</div>
+    </div>
+
+    <!-- ⑧ FOOTER -->
+    <div class="footer">
+      <div class="footer-name">Élégance Célébration</div>
+      <div class="footer-contact">contact@elegance-celebration.fr · 01 23 45 67 89</div>
+      <div class="footer-legal">
+        Vous recevez cet email car vous êtes inscrit(e) à notre newsletter.<br/>
+        <a href="#" class="footer-unsub">Se désabonner</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Légende des blocs -->
+  <div class="legend">
+    <div class="legend-title">Structure de la newsletter</div>
+    <div class="legend-items">
+      <div class="legend-item"><div class="legend-dot" style="background:#745b00"></div> ① En-tête logo</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#d5af37"></div> ② Image héro</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#a08020"></div> ③ Titre principal</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#fcf9f3;border:1px solid #ccc"></div> ④ Introduction</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#f0eee8;border:1px solid #ccc"></div> ⑤ 2 colonnes</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#745b00"></div> ⑥ Bouton CTA</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#e5e2dc;border:1px solid #ccc"></div> ⑦ Témoignage</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#31312d"></div> ⑧ Footer</div>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -19,5 +19,6 @@ public interface PortfolioItemMapper {
     @IterableMapping(qualifiedByName = "withoutPhotos")
     List<PortfolioItemResponseDto> toResponseList(List<PortfolioItem> items);
 
+    @Named("withPhotos")
     PortfolioItemResponseDto toResponseWithPhotos(PortfolioItem item);
 }

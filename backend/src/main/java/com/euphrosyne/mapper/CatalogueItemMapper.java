@@ -19,5 +19,6 @@ public interface CatalogueItemMapper {
     @IterableMapping(qualifiedByName = "withoutPhotos")
     List<CatalogueItemResponseDto> toResponseList(List<CatalogueItem> items);
 
+    @Named("withPhotos")
     CatalogueItemResponseDto toResponseWithPhotos(CatalogueItem item);
 }

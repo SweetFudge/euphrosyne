@@ -4,6 +4,7 @@ import com.euphrosyne.dto.CatalogueItemResponseDto;
 import com.euphrosyne.model.CatalogueItem;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 import java.util.List;
 
@@ -15,5 +16,6 @@ public interface CatalogueItemMapper {
     @Mapping(target = "photos", ignore = true)
     List<CatalogueItemResponseDto> toResponseList(List<CatalogueItem> items);
 
+    @Named("withPhotos")
     CatalogueItemResponseDto toResponseWithPhotos(CatalogueItem item);
 }

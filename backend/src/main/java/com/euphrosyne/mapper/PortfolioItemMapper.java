@@ -4,6 +4,7 @@ import com.euphrosyne.dto.PortfolioItemResponseDto;
 import com.euphrosyne.model.PortfolioItem;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 import java.util.List;
 
@@ -15,5 +16,6 @@ public interface PortfolioItemMapper {
     @Mapping(target = "photos", ignore = true)
     List<PortfolioItemResponseDto> toResponseList(List<PortfolioItem> items);
 
+    @Named("withPhotos")
     PortfolioItemResponseDto toResponseWithPhotos(PortfolioItem item);
 }

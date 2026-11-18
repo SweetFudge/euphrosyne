@@ -1,0 +1,20 @@
+{
+  "name": "whatsapp-random-replier",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Bot WhatsApp : répond au hasard quand un contact précis te tag dans un groupe.",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@whiskeysockets/baileys": "^6.7.24",
+    "pino": "^10.4.0",
+    "qrcode-terminal": "^0.12.0"
+  }
+}

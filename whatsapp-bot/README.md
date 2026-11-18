@@ -17,6 +17,10 @@ Se connecte à ton WhatsApp (comme un « appareil connecté »), écoute un ou p
 | `QUOTE_MESSAGE` | Répondre en citant le message (`true`) |
 | `REPLIES_FILE` | JSON perso : `["phrase 1", "phrase 2"]` (défaut : `src/replies.json`) |
 | `TARGET_LID`, `TARGET_PUSHNAME` | Secours si WhatsApp identifie le contact par LID (voir Dépannage) |
+| `ANTHROPIC_API_KEY` | Active la génération de sujets par Claude (sinon : réponses aléatoires locales) |
+| `TOPIC_CRITERIA` | Critères libres du sujet voulu (ex. « drôle, sport, bouffe, jamais de politique ») |
+| `CLAUDE_MODEL` | Modèle utilisé (défaut `claude-opus-5-5` ; `claude-sonnet-5-5` / `claude-haiku-5-5` coûtent moins cher) |
+| `TOPIC_USE_MESSAGE_CONTEXT` | `true` = envoie aussi le message qui te tag à Claude (voir Confidentialité) |
 | `LOG_SENDERS` | `true` pour voir l'identifiant de chaque expéditeur |
 | `AUTH_DIR` | Dossier de session. **Sur Railway : `/data/auth`** |
 
@@ -49,6 +53,14 @@ npm test
 - **Le bot ne réagit pas** : mets `LOG_SENDERS=true`. Si l'expéditeur apparaît sous la forme `123456@lid` (et non `33…@s.whatsapp.net`), copie cet identifiant dans `TARGET_LID`, ou mets le nom affiché dans `TARGET_PUSHNAME`.
 - **Le tag n'est pas détecté** : ajoute ton nom tel que le contact l'écrit dans `MY_NAMES`.
 - **Session déconnectée (`loggedOut`)** : supprime le contenu du volume `/data/auth` et redéploie pour te reconnecter.
+
+## Sujets générés par Claude
+
+Avec `ANTHROPIC_API_KEY`, chaque réponse est un **sujet de conversation généré par Claude** selon `TOPIC_CRITERIA`, au format message WhatsApp (1-2 phrases). Le bot garde en mémoire les 15 derniers sujets pour ne pas se répéter. Si l'API est lente (20 s), en erreur ou refuse, le bot envoie une phrase aléatoire de `src/replies.json` : il répond toujours.
+
+**Confidentialité** : par défaut, seuls tes critères et les anciens sujets sont envoyés à l'API Anthropic. Avec `TOPIC_USE_MESSAGE_CONTEXT=true`, le texte du message qui te tag est aussi envoyé.
+
+**Coût** : un appel court par réponse, limité par le cooldown. Avec `claude-haiku-5-5`, c'est négligeable.
 
 ## Personnaliser les réponses
 

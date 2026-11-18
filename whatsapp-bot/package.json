@@ -13,6 +13,7 @@
     "node": ">=20"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^1.10.0",
     "@whiskeysockets/baileys": "^6.7.24",
     "pino": "^10.4.0",
     "qrcode-terminal": "^0.12.0"

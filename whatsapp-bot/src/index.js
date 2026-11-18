@@ -19,6 +19,7 @@ import {
   isGroupAllowed,
   pickReply,
 } from './matcher.js';
+import { createTopicGenerator } from './topics.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const env = process.env;
@@ -39,6 +40,8 @@ const config = {
   delayMax: Number(env.REPLY_DELAY_MAX_MS ?? 6000),
   quote: (env.QUOTE_MESSAGE ?? 'true') !== 'false',
   logSenders: env.LOG_SENDERS === 'true',
+  // Envoie le texte du message qui te tag à Claude pour des sujets plus pertinents
+  topicUsesContext: env.TOPIC_USE_MESSAGE_CONTEXT === 'true',
   authDir: env.AUTH_DIR || './auth',
 };
 
@@ -54,6 +57,8 @@ const replies = JSON.parse(
 const logger = pino({ level: env.LOG_LEVEL || 'warn' });
 const log = (...args) => console.log(new Date().toISOString(), ...args);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+const topicGenerator = createTopicGenerator();
 
 // ---------- État ----------
 const groupSubjects = new Map(); // jid -> nom du groupe
@@ -111,16 +116,20 @@ async function handleMessage(sock, msg) {
   }
   lastReplyAt = now;
 
-  const reply = pickReply(replies, lastReply);
-  if (!reply) return;
-  lastReply = reply;
+  // Sujet généré par Claude selon tes critères ; réponse aléatoire locale en secours
+  const generating = topicGenerator
+    ? topicGenerator.generate({ context: config.topicUsesContext ? text : '' })
+    : Promise.resolve(null);
 
   // Petit délai + "est en train d'écrire…" pour faire naturel
   const delay = config.delayMin + Math.random() * Math.max(0, config.delayMax - config.delayMin);
   try {
     await sock.presenceSubscribe(jid);
     await sock.sendPresenceUpdate('composing', jid);
-    await sleep(delay);
+    const [generated] = await Promise.all([generating, sleep(delay)]);
+    const reply = generated || pickReply(replies, lastReply);
+    if (!reply) return;
+    lastReply = reply;
     await sock.sendPresenceUpdate('paused', jid);
     await sock.sendMessage(jid, { text: reply }, config.quote ? { quoted: msg } : undefined);
     log(`💬 réponse envoyée dans "${subject || jid}" : ${reply}`);
@@ -198,5 +207,10 @@ async function start() {
 
 log('🚀 Démarrage…');
 log(`   Contact ciblé : ${config.target.number || config.target.lid || config.target.pushName}`);
+log(
+  topicGenerator
+    ? `   Sujets : générés par Claude (${topicGenerator.model}) — critères : ${topicGenerator.criteria}`
+    : '   Sujets : réponses aléatoires locales (ANTHROPIC_API_KEY absente)',
+);
 log(`   Groupes : ${config.groupIds.concat(config.groupNames).join(', ') || 'tous'}`);
 start();

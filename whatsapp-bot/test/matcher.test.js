@@ -34,3 +34,17 @@ test('pickReply évite de répéter', () => {
 test('parseList', () => {
   assert.deepEqual(parseList(' a, b ,,c '), ['a', 'b', 'c']);
 });
+
+import { buildUserPrompt, createTopicGenerator } from '../src/topics.js';
+
+test('buildUserPrompt : critères, contexte et historique', () => {
+  const p = buildUserPrompt({ criteria: 'sport, humour', recentTopics: ['A', 'B'], context: 'salut @moi' });
+  assert.match(p, /sport, humour/);
+  assert.match(p, /salut @moi/);
+  assert.match(p, /- A\n- B/);
+  assert.match(buildUserPrompt({}), /léger/); // critères par défaut
+});
+
+test('createTopicGenerator : null sans clé API', () => {
+  assert.equal(createTopicGenerator({ apiKey: '' }), null);
+});
